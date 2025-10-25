@@ -3,31 +3,29 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Happy Birthday ❤️</title>
+  <title>Happy Birthday</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div class="background">
-    <div class="hearts"></div>
-    <div class="stars"></div>
-  </div>
+  <div id="background"></div>
 
-  <div class="main">
-    <h1 class="title">🎉 Happy Birthday! 🎂</h1>
-    <button id="playBtn">Play Surprise 💖</button>
+  <div class="container">
+    <h1 class="title">💖 Happy Birthday 💖</h1>
+    <button id="startButton">Play Surprise 🎶</button>
 
-    <div id="book" class="book hidden">
-      <div class="page" id="page1">Happy Birthday 🎂</div>
-      <div class="page" id="page2">Happy Birthday to my Favourite Person 💕</div>
-      <div class="page" id="page3">18 June 2024<br/>4:57 PM</div>
+    <div class="book hidden">
+      <div class="page" id="page1">The Day We Met 💫</div>
+      <div class="page" id="page2">Happy Birthday to My Favourite Person 💗</div>
+      <div class="page" id="page3">18 June 2024 — 4:57 PM ✨</div>
+      <div class="page" id="page4">🎉 Happy Birthday 💕</div>
     </div>
 
-    <div id="final" class="hidden">
-      <h2 class="final-text">💖 Happy Birthday 💖</h2>
+    <div class="final-screen hidden">
+      <h2 class="final-text">💞 Happy Birthday 💞</h2>
     </div>
   </div>
 
-  <audio id="music" src="happy.mp3"></audio>
+  <audio id="birthdaySong" src="happy.mp3"></audio>
   <audio id="flipSound" src="pageflip.mp3"></audio>
 
   <script src="script.js"></script>
