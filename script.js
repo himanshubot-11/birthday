@@ -1,32 +1,46 @@
-const music = document.getElementById("music");
-const flipSound = document.getElementById("flipSound");
-const playBtn = document.getElementById("playBtn");
-const book = document.getElementById("book");
+// Heart + star background
+const background = document.getElementById("background");
+const shapes = ["💖", "⭐"];
+for (let i = 0; i < 40; i++) {
+  const el = document.createElement("div");
+  el.textContent = shapes[Math.floor(Math.random() * shapes.length)];
+  el.className = Math.random() > 0.5 ? "heart" : "star";
+  el.style.left = Math.random() * 100 + "vw";
+  el.style.animationDuration = 6 + Math.random() * 6 + "s";
+  el.style.fontSize = 15 + Math.random() * 25 + "px";
+  background.appendChild(el);
+}
+
+// Music + animation logic
+const startBtn = document.getElementById("startButton");
+const book = document.querySelector(".book");
 const pages = document.querySelectorAll(".page");
-const finalScreen = document.getElementById("final");
+const song = document.getElementById("birthdaySong");
+const flip = document.getElementById("flipSound");
+const finalScreen = document.querySelector(".final-screen");
 
-let currentPage = 0;
-let isPlaying = false;
+startBtn.addEventListener("click", async () => {
+  startBtn.classList.add("hidden");
+  book.classList.remove("hidden");
 
-playBtn.addEventListener("click", () => {
-  if (!isPlaying) {
-    music.play();
-    isPlaying = true;
-    playBtn.style.display = "none";
-    book.classList.remove("hidden");
+  try {
+    await song.play();
+  } catch (e) {
+    alert("Tap the button again to enable music 🎵");
   }
-});
 
-pages.forEach((page, i) => {
-  page.addEventListener("click", () => {
-    flipSound.currentTime = 0;
-    flipSound.play();
-    page.classList.add("flipped");
-    if (i === pages.length - 1) {
+  let i = 0;
+  const interval = setInterval(() => {
+    if (i < pages.length) {
+      flip.play();
+      pages[i].classList.add("flip");
+      i++;
+    } else {
+      clearInterval(interval);
       setTimeout(() => {
         book.classList.add("hidden");
         finalScreen.classList.remove("hidden");
       }, 1500);
     }
-  });
+  }, 2500);
 });
