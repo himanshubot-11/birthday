@@ -1,225 +1,126 @@
-/* ------------------------------
-   GLOBAL STYLES
------------------------------- */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
 body {
-  height: 100vh;
-  width: 100vw;
+  margin: 0;
   overflow: hidden;
   font-family: "Poppins", sans-serif;
+  background: radial-gradient(circle at center, #ffd6ec, #ffb6d9);
+  height: 100vh;
   display: flex;
-  flex-direction: column;
-  justify-content: center;
   align-items: center;
-  background: radial-gradient(circle at top, #ffd6eb, #ff9fcf, #ff69b4);
-  position: relative;
-  perspective: 1000px;
+  justify-content: center;
 }
 
-/* ------------------------------
-   BACKGROUND ANIMATION
------------------------------- */
-.background {
+#background {
   position: fixed;
-  top: 0;
-  left: 0;
   width: 100%;
   height: 100%;
   overflow: hidden;
-  z-index: -1;
+  top: 0;
+  left: 0;
+  z-index: 0;
 }
 
 .heart, .star {
   position: absolute;
-  animation: float 12s linear infinite;
+  animation: float 10s infinite ease-in-out;
   opacity: 0.8;
-}
-
-.heart::before {
-  content: "💖";
-  font-size: 2rem;
-}
-
-.star::before {
-  content: "✨";
-  font-size: 1.5rem;
 }
 
 @keyframes float {
   0% {
-    transform: translateY(100vh) scale(0.8) rotate(0deg);
-    opacity: 0.3;
-  }
-  50% {
-    opacity: 1;
+    transform: translateY(100vh) scale(0.8);
+    opacity: 0.6;
   }
   100% {
-    transform: translateY(-10vh) scale(1.3) rotate(360deg);
+    transform: translateY(-10vh) scale(1.2);
     opacity: 0;
   }
 }
 
-/* generate multiple floating elements */
-.background span {
-  position: absolute;
-  animation: float 10s linear infinite;
-  opacity: 0.8;
-}
-.background span:nth-child(odd)::before { content: "💖"; }
-.background span:nth-child(even)::before { content: "✨"; }
-.background span:nth-child(3n)::before { content: "💞"; }
-
-@keyframes float {
-  0% { transform: translateY(100vh) rotate(0deg); opacity: 0.2; }
-  50% { opacity: 1; }
-  100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
-}
-
-/* ------------------------------
-   TITLE ANIMATION
------------------------------- */
-.title {
-  font-size: 3.5em;
+.container {
+  position: relative;
+  z-index: 2;
   text-align: center;
-  font-weight: 700;
-  background: linear-gradient(90deg, #ff69b4, #ff1493, #ff6ec7, #ff69b4);
-  -webkit-background-clip: text;
-  color: transparent;
-  background-size: 400%;
-  animation: shimmer 6s infinite linear, glow 2s ease-in-out infinite alternate;
-  text-shadow: 0 0 10px rgba(255, 255, 255, 0.6);
 }
 
-@keyframes shimmer {
-  0% { background-position: 0% 50%; }
-  100% { background-position: 100% 50%; }
+.title {
+  font-size: 3rem;
+  color: #ff1493;
+  text-shadow: 0 0 20px #ff69b4;
+  margin-bottom: 20px;
+  animation: glow 2s infinite alternate;
 }
 
 @keyframes glow {
-  from { text-shadow: 0 0 10px #fff, 0 0 20px #ff69b4; }
-  to { text-shadow: 0 0 20px #ff1493, 0 0 40px #ff6ec7; }
+  from {
+    text-shadow: 0 0 10px #ff9ad9, 0 0 20px #ff69b4;
+  }
+  to {
+    text-shadow: 0 0 30px #ff4da6, 0 0 60px #ff1a8c;
+  }
 }
 
-/* ------------------------------
-   BUTTON STYLING
------------------------------- */
-button {
-  margin-top: 20px;
-  padding: 15px 35px;
-  font-size: 1.2em;
+#startButton {
+  background: linear-gradient(45deg, #ff6fb3, #ff1493);
   border: none;
-  border-radius: 50px;
-  background: linear-gradient(45deg, #ff69b4, #ff1493, #ff6ec7);
   color: white;
-  font-weight: bold;
+  padding: 15px 40px;
+  border-radius: 50px;
+  font-size: 1.2rem;
   cursor: pointer;
-  box-shadow: 0 0 20px rgba(255, 105, 180, 0.6);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  animation: buttonGlow 3s ease-in-out infinite alternate;
+  box-shadow: 0 0 15px rgba(255, 105, 180, 0.8);
+  transition: transform 0.2s ease, box-shadow 0.3s ease;
 }
 
-button:hover {
+#startButton:hover {
   transform: scale(1.1);
-  box-shadow: 0 0 40px rgba(255, 20, 147, 0.8);
+  box-shadow: 0 0 25px rgba(255, 20, 147, 1);
 }
 
-@keyframes buttonGlow {
-  from { box-shadow: 0 0 10px #ff69b4, 0 0 20px #ff1493; }
-  to { box-shadow: 0 0 30px #ff1493, 0 0 60px #ff6ec7; }
-}
-
-/* ------------------------------
-   BOOK DESIGN
------------------------------- */
 .book {
-  width: 320px;
-  height: 220px;
   position: relative;
-  margin-top: 60px;
-  perspective: 1200px;
+  width: 280px;
+  height: 180px;
+  margin: 50px auto;
+  perspective: 1000px;
 }
 
 .page {
+  position: absolute;
   width: 100%;
   height: 100%;
-  background: #fff;
-  border-radius: 12px;
-  position: absolute;
-  box-shadow: 0 5px 25px rgba(255, 105, 180, 0.5);
-  transform-origin: left;
-  transition: transform 1s ease, opacity 1s ease;
+  background: #fff0f6;
+  border-radius: 10px;
+  box-shadow: 0 0 20px rgba(255, 105, 180, 0.3);
   display: flex;
-  justify-content: center;
   align-items: center;
-  font-size: 1.6em;
+  justify-content: center;
+  font-size: 1.3rem;
   color: #ff1493;
-  font-weight: bold;
-  letter-spacing: 1px;
-  backface-visibility: hidden;
+  transition: transform 1s ease, opacity 1s ease;
+  transform-origin: left;
 }
 
-.page:nth-child(odd) {
-  background: linear-gradient(to right, #fff, #ffe6f0);
+.hidden {
+  display: none;
 }
 
-.page:nth-child(even) {
-  background: linear-gradient(to left, #fff, #ffe6f0);
-}
-
-.page.flipped {
+.page.flip {
   transform: rotateY(-180deg);
   opacity: 0;
 }
 
-/* ------------------------------
-   FINAL SCREEN
------------------------------- */
-#final {
+.final-screen {
   text-align: center;
-  animation: fadeIn 2s ease forwards;
+  animation: fadeIn 2s forwards;
 }
 
 .final-text {
-  font-size: 3em;
-  font-weight: 700;
-  background: linear-gradient(90deg, #ff1493, #ff6ec7, #ffb6c1);
-  -webkit-background-clip: text;
-  color: transparent;
-  text-shadow: 0 0 25px rgba(255, 20, 147, 0.6);
-  animation: glowFinal 2s ease-in-out infinite alternate;
+  font-size: 2.5rem;
+  color: #ff1493;
+  text-shadow: 0 0 20px #ff69b4;
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: scale(0.8); }
+  from { opacity: 0; transform: scale(0.9); }
   to { opacity: 1; transform: scale(1); }
-}
-
-@keyframes glowFinal {
-  from { text-shadow: 0 0 15px #ff69b4, 0 0 30px #ff1493; }
-  to { text-shadow: 0 0 40px #ff6ec7, 0 0 60px #ff69b4; }
-}
-
-/* ------------------------------
-   RESPONSIVE DESIGN
------------------------------- */
-@media (max-width: 600px) {
-  .title {
-    font-size: 2.5em;
-  }
-  button {
-    font-size: 1em;
-    padding: 12px 25px;
-  }
-  .book {
-    width: 260px;
-    height: 180px;
-  }
-  .final-text {
-    font-size: 2em;
-  }
 }
