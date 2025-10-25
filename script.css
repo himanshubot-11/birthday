@@ -1,70 +1,174 @@
-body {
+/* ------------------------------
+   GLOBAL STYLES
+------------------------------ */
+* {
   margin: 0;
-  overflow: hidden;
-  font-family: "Poppins", sans-serif;
-  background-color: #ffb6c1;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  flex-direction: column;
+  padding: 0;
+  box-sizing: border-box;
 }
 
+body {
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  font-family: "Poppins", sans-serif;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: radial-gradient(circle at top, #ffd6eb, #ff9fcf, #ff69b4);
+  position: relative;
+  perspective: 1000px;
+}
+
+/* ------------------------------
+   BACKGROUND ANIMATION
+------------------------------ */
+.background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  z-index: -1;
+}
+
+.heart, .star {
+  position: absolute;
+  animation: float 12s linear infinite;
+  opacity: 0.8;
+}
+
+.heart::before {
+  content: "💖";
+  font-size: 2rem;
+}
+
+.star::before {
+  content: "✨";
+  font-size: 1.5rem;
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(100vh) scale(0.8) rotate(0deg);
+    opacity: 0.3;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-10vh) scale(1.3) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+/* generate multiple floating elements */
+.background span {
+  position: absolute;
+  animation: float 10s linear infinite;
+  opacity: 0.8;
+}
+.background span:nth-child(odd)::before { content: "💖"; }
+.background span:nth-child(even)::before { content: "✨"; }
+.background span:nth-child(3n)::before { content: "💞"; }
+
+@keyframes float {
+  0% { transform: translateY(100vh) rotate(0deg); opacity: 0.2; }
+  50% { opacity: 1; }
+  100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+}
+
+/* ------------------------------
+   TITLE ANIMATION
+------------------------------ */
 .title {
-  font-size: 3em;
+  font-size: 3.5em;
   text-align: center;
-  background: linear-gradient(90deg, #ff69b4, #ff1493, #ffb6c1);
+  font-weight: 700;
+  background: linear-gradient(90deg, #ff69b4, #ff1493, #ff6ec7, #ff69b4);
   -webkit-background-clip: text;
   color: transparent;
-  animation: glow 3s ease-in-out infinite alternate;
+  background-size: 400%;
+  animation: shimmer 6s infinite linear, glow 2s ease-in-out infinite alternate;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.6);
+}
+
+@keyframes shimmer {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 100% 50%; }
 }
 
 @keyframes glow {
-  from { text-shadow: 0 0 5px #fff, 0 0 10px #ff69b4; }
-  to { text-shadow: 0 0 20px #ff69b4, 0 0 30px #ff1493; }
+  from { text-shadow: 0 0 10px #fff, 0 0 20px #ff69b4; }
+  to { text-shadow: 0 0 20px #ff1493, 0 0 40px #ff6ec7; }
 }
 
+/* ------------------------------
+   BUTTON STYLING
+------------------------------ */
 button {
-  padding: 15px 30px;
+  margin-top: 20px;
+  padding: 15px 35px;
   font-size: 1.2em;
   border: none;
-  background: #ff1493;
+  border-radius: 50px;
+  background: linear-gradient(45deg, #ff69b4, #ff1493, #ff6ec7);
   color: white;
-  border-radius: 20px;
+  font-weight: bold;
   cursor: pointer;
-  transition: transform 0.2s ease;
+  box-shadow: 0 0 20px rgba(255, 105, 180, 0.6);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  animation: buttonGlow 3s ease-in-out infinite alternate;
 }
 
 button:hover {
   transform: scale(1.1);
-  background: #ff69b4;
+  box-shadow: 0 0 40px rgba(255, 20, 147, 0.8);
 }
 
-.hidden {
-  display: none;
+@keyframes buttonGlow {
+  from { box-shadow: 0 0 10px #ff69b4, 0 0 20px #ff1493; }
+  to { box-shadow: 0 0 30px #ff1493, 0 0 60px #ff6ec7; }
 }
 
+/* ------------------------------
+   BOOK DESIGN
+------------------------------ */
 .book {
-  width: 300px;
-  height: 200px;
-  margin-top: 50px;
-  perspective: 1000px;
+  width: 320px;
+  height: 220px;
   position: relative;
+  margin-top: 60px;
+  perspective: 1200px;
 }
 
 .page {
   width: 100%;
   height: 100%;
-  background: white;
-  border-radius: 10px;
+  background: #fff;
+  border-radius: 12px;
   position: absolute;
-  text-align: center;
-  font-size: 1.5em;
+  box-shadow: 0 5px 25px rgba(255, 105, 180, 0.5);
+  transform-origin: left;
+  transition: transform 1s ease, opacity 1s ease;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.6em;
   color: #ff1493;
-  line-height: 200px;
-  box-shadow: 0 0 20px rgba(255, 105, 180, 0.5);
-  transition: transform 1s, opacity 1s;
+  font-weight: bold;
+  letter-spacing: 1px;
   backface-visibility: hidden;
+}
+
+.page:nth-child(odd) {
+  background: linear-gradient(to right, #fff, #ffe6f0);
+}
+
+.page:nth-child(even) {
+  background: linear-gradient(to left, #fff, #ffe6f0);
 }
 
 .page.flipped {
@@ -72,44 +176,50 @@ button:hover {
   opacity: 0;
 }
 
+/* ------------------------------
+   FINAL SCREEN
+------------------------------ */
+#final {
+  text-align: center;
+  animation: fadeIn 2s ease forwards;
+}
+
 .final-text {
-  font-size: 2.5em;
-  color: #fff;
-  text-shadow: 0 0 15px #ff69b4;
-  animation: pulse 2s infinite alternate;
+  font-size: 3em;
+  font-weight: 700;
+  background: linear-gradient(90deg, #ff1493, #ff6ec7, #ffb6c1);
+  -webkit-background-clip: text;
+  color: transparent;
+  text-shadow: 0 0 25px rgba(255, 20, 147, 0.6);
+  animation: glowFinal 2s ease-in-out infinite alternate;
 }
 
-@keyframes pulse {
-  from { transform: scale(1); opacity: 0.8; }
-  to { transform: scale(1.1); opacity: 1; }
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.8); }
+  to { opacity: 1; transform: scale(1); }
 }
 
-.background {
-  position: fixed;
-  top: 0; left: 0;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  z-index: -1;
-  background: radial-gradient(circle, #ffe6f0, #ffb6c1);
+@keyframes glowFinal {
+  from { text-shadow: 0 0 15px #ff69b4, 0 0 30px #ff1493; }
+  to { text-shadow: 0 0 40px #ff6ec7, 0 0 60px #ff69b4; }
 }
 
-.hearts, .stars {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  background-repeat: repeat;
-  pointer-events: none;
-}
-
-.hearts::before, .stars::before {
-  content: "💖💗💓💞💘";
-  position: absolute;
-  font-size: 2em;
-  animation: float 10s linear infinite;
-}
-
-@keyframes float {
-  0% { transform: translateY(100vh) scale(1); opacity: 0.5; }
-  100% { transform: translateY(-10vh) scale(1.5); opacity: 0; }
+/* ------------------------------
+   RESPONSIVE DESIGN
+------------------------------ */
+@media (max-width: 600px) {
+  .title {
+    font-size: 2.5em;
+  }
+  button {
+    font-size: 1em;
+    padding: 12px 25px;
+  }
+  .book {
+    width: 260px;
+    height: 180px;
+  }
+  .final-text {
+    font-size: 2em;
+  }
 }
