@@ -1,46 +1,71 @@
-// Heart + star background
-const background = document.getElementById("background");
-const shapes = ["💖", "⭐"];
-for (let i = 0; i < 40; i++) {
-  const el = document.createElement("div");
-  el.textContent = shapes[Math.floor(Math.random() * shapes.length)];
-  el.className = Math.random() > 0.5 ? "heart" : "star";
-  el.style.left = Math.random() * 100 + "vw";
-  el.style.animationDuration = 6 + Math.random() * 6 + "s";
-  el.style.fontSize = 15 + Math.random() * 25 + "px";
-  background.appendChild(el);
+const openBtn = document.getElementById('openDiary');
+const diaryPopup = document.getElementById('diaryPopup');
+const pages = diaryPopup.querySelectorAll('.diary-page');
+const nextBtn = document.getElementById('nextPage');
+const celebrationPopup = document.getElementById('celebrationPopup');
+const homeBtn = document.getElementById('homeBtn');
+const birthdayBox = document.getElementById('birthdayBox');
+const floatingEmojis = document.querySelector('.floating-emojis');
+const music = document.getElementById('birthdayMusic');
+
+let currentPage = 0;
+const emojis = ['❤️','💕','💖','💘','💞','💓','❣️','💗','🎂','💋','✨','🎉'];
+
+// Floating emojis randomly
+function createFloatingEmoji(){
+  const span = document.createElement('span');
+  span.innerText = emojis[Math.floor(Math.random()*emojis.length)];
+  span.style.left = Math.random()*90 + 'vw';
+  span.style.fontSize = (20+Math.random()*20)+'px';
+  span.style.animationDuration = (5+Math.random()*5)+'s';
+  floatingEmojis.appendChild(span);
+  setTimeout(()=>floatingEmojis.removeChild(span),10000);
+}
+setInterval(createFloatingEmoji,200);
+
+// Typing effect
+function typeText(page){
+  const text = page.dataset.text;
+  page.innerHTML = '';
+  let idx = 0;
+  const span = document.createElement('span');
+  span.classList.add('typing-text');
+  page.appendChild(span);
+  const interval = setInterval(()=>{
+    span.innerText = text.slice(0,idx+1);
+    idx++;
+    if(idx>=text.length) clearInterval(interval);
+  },50);
 }
 
-// Music + animation logic
-const startBtn = document.getElementById("startButton");
-const book = document.querySelector(".book");
-const pages = document.querySelectorAll(".page");
-const song = document.getElementById("birthdaySong");
-const flip = document.getElementById("flipSound");
-const finalScreen = document.querySelector(".final-screen");
+// Open diary
+openBtn.onclick = ()=>{
+  birthdayBox.style.display='none';
+  diaryPopup.classList.add('active');
+  pages[currentPage].style.display='block';
+  typeText(pages[currentPage]);
+  music.play();
+};
 
-startBtn.addEventListener("click", async () => {
-  startBtn.classList.add("hidden");
-  book.classList.remove("hidden");
-
-  try {
-    await song.play();
-  } catch (e) {
-    alert("Tap the button again to enable music 🎵");
+// Next page
+nextBtn.onclick = ()=>{
+  pages[currentPage].style.display='none';
+  currentPage++;
+  if(currentPage<pages.length){
+    pages[currentPage].style.display='block';
+    typeText(pages[currentPage]);
+  }else{
+    diaryPopup.classList.remove('active');
+    celebrationPopup.classList.add('active');
   }
+};
 
-  let i = 0;
-  const interval = setInterval(() => {
-    if (i < pages.length) {
-      flip.play();
-      pages[i].classList.add("flip");
-      i++;
-    } else {
-      clearInterval(interval);
-      setTimeout(() => {
-        book.classList.add("hidden");
-        finalScreen.classList.remove("hidden");
-      }, 1500);
-    }
-  }, 2500);
-});
+// Home button
+homeBtn.onclick = ()=>{
+  celebrationPopup.classList.remove('active');
+  currentPage=0;
+  birthdayBox.style.display='block';
+  pages.forEach(p=>p.style.display='none');
+  music.pause();
+  music.currentTime=0;
+};
