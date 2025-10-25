@@ -1,33 +1,49 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Happy Birthday</title>
-  <link rel="stylesheet" href="style.css" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Happy Birthday!</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div id="background"></div>
 
-  <div class="container">
-    <h1 class="title">💖 Happy Birthday 💖</h1>
-    <button id="startButton">Play Surprise 🎶</button>
+<!-- Floating emojis -->
+<div class="floating-emojis"></div>
 
-    <div class="book hidden">
-      <div class="page" id="page1">The Day We Met 💫</div>
-      <div class="page" id="page2">Happy Birthday to My Favourite Person 💗</div>
-      <div class="page" id="page3">18 June 2024 — 4:57 PM ✨</div>
-      <div class="page" id="page4">🎉 Happy Birthday 💕</div>
-    </div>
+<!-- Audio -->
+<audio id="birthdayMusic" loop>
+  <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+</audio>
 
-    <div class="final-screen hidden">
-      <h2 class="final-text">💞 Happy Birthday 💞</h2>
+<!-- Main container -->
+<div class="container">
+
+  <!-- Initial Screen -->
+  <div class="birthday-box" id="birthdayBox">
+    <h1>HAPPY BIRTHDAY TO YOU 🎉</h1>
+    <button id="openDiary">OPEN</button>
+  </div>
+
+  <!-- Diary Popup -->
+  <div class="diary-popup" id="diaryPopup">
+    <div class="diary-content">
+      <div class="diary-page" data-text="27 October\nHappy Birthday to a Special Person!"></div>
+      <div class="diary-page" data-text="You are amazing and bring so much joy!"></div>
+      <div class="diary-page" data-text="Thank you for staying with me for over a year from 18 June 2024!"></div>
+      <button id="nextPage">Next</button>
     </div>
   </div>
 
-  <audio id="birthdaySong" src="happy.mp3"></audio>
-  <audio id="flipSound" src="pageflip.mp3"></audio>
+  <!-- Celebration Popup -->
+  <div class="celebration-popup" id="celebrationPopup">
+    <h2>Enjoy Your Day!</h2>
+    <h3>Happy Birthday Again 🎉</h3>
+    <button id="homeBtn">HOME</button>
+  </div>
 
-  <script src="script.js"></script>
+</div>
+
+<script src="script.js"></script>
 </body>
 </html>
