@@ -156,4 +156,20 @@ body {
         width: 80%;
         font-size: 24px;
     }
+}        width: 90%;
+        height: 300px;
+    }
+
+    .front {
+        font-size: 24px;
+    }
+
+    .diary {
+        font-size: 16px;
+    }
+
+    .modal-content {
+        width: 80%;
+        font-size: 24px;
+    }
 }
