@@ -1,237 +1,273 @@
 /* script.js
-   Behavior:
-   - 3-second countdown with animated hearts background
-   - After countdown: reveal main stage, show HAPPY BIRTHDAY popup + fireworks, autoplay "happy-birthday.mp3"
-   - Card flip opens diary (flip animation already in CSS); when clicked, diary flips in
+   - 3-second countdown with cute hearts background
+   - After countdown: reveal main stage, show HAPPY BIRTHDAY popup + confetti
+   - Card flips on click; diary cover "page-turn" reveals compliments (2c)
+   - Music: synthesized "Happy Birthday" melody via Web Audio API (loops)
+   - If autoplay blocked, a play button appears
 */
 
-(function () {
-  // DOM
+(() => {
+  const COUNT = 3; // 3 seconds
   const overlay = document.getElementById('countdownOverlay');
   const countNumber = document.getElementById('countNumber');
   const mainStage = document.getElementById('mainStage');
   const popup = document.getElementById('revealPopup');
-  const popupMsg = popup.querySelector('.message');
-  const music = document.getElementById('music');
+  const playFallback = document.getElementById('playFallback');
+  const confettiCanvas = document.getElementById('confetti');
+
   const card = document.getElementById('card');
-  const diary = document.getElementById('diary');
-  const fwCanvas = document.getElementById('fwCanvas');
+  const diaryCover = document.getElementById('diaryCover');
+  const page = document.getElementById('page');
+  const turnBtn = document.getElementById('turnBtn');
 
-  // CONFIG
-  const COUNT_SECONDS = 3; // your requested 3 seconds
-  const MUSIC_FILE = 'happy-birthday.mp3'; // must exist in same folder
-
-  // prepare music src (already in HTML). We will try to play after reveal.
-  music.addEventListener('error', () => {
-    console.warn('Audio failed to load. Ensure', MUSIC_FILE, 'is in the same folder.');
-  });
-
-  // ---------- HEARTS BACKGROUND (create animated hearts) ----------
+  // --- Hearts background creation ---
   (function makeHearts() {
     const container = document.querySelector('.hearts-bg');
     if (!container) return;
     const total = 22;
     for (let i = 0; i < total; i++) {
       const el = document.createElement('div');
-      el.className = 'h';
-      const size = Math.round(12 + Math.random() * 26);
+      el.className = 'heart';
+      const size = 12 + Math.random() * 36;
       el.style.width = size + 'px';
       el.style.height = size + 'px';
-      el.style.left = Math.round(Math.random() * 100) + '%';
-      el.style.bottom = -50 - Math.round(Math.random() * 120) + 'px';
-      const delay = (Math.random() * 1.5).toFixed(2);
-      const duration = (4 + Math.random() * 4).toFixed(2);
-      el.style.animation = `rise ${duration}s linear ${delay}s infinite`;
-      // color tint
-      const color = `hsla(${330 - Math.random()*60}deg, 70%, ${50 - Math.random()*10}%, .95)`;
-      el.querySelectorAll(':scope::before'); // noop to satisfy some linters
-      // use pseudo elements CSS already defined; set custom property for transform size by scale
-      el.style.setProperty('--color', color);
+      el.style.left = Math.random() * 100 + '%';
+      el.style.bottom = -60 - Math.random() * 120 + 'px';
+      el.style.opacity = 0.7 + Math.random() * 0.3;
+      const delay = Math.random() * 1.2;
+      const dur = 4 + Math.random() * 5;
+      el.style.animation = `rise ${dur}s linear ${delay}s infinite`;
       container.appendChild(el);
     }
-
-    // add keyframes dynamically (so the CSS file remains simple)
-    const style = document.createElement('style');
-    style.textContent = `
-      @keyframes rise {
-        0% { transform: translateY(0) rotate(0deg); opacity: 0; transform-origin:center; }
-        10% { opacity: 1; }
-        100% { transform: translateY(-120vh) rotate(360deg); opacity: 0; }
-      }
-      .hearts-bg .h:before, .hearts-bg .h:after {
-        background:var(--heart-color, rgba(210,20,100,0.95));
-      }
-      .hearts-bg .h { --heart-color: rgba(210,20,100,0.95);}
-      /* give each heart a layered look using radial gradient via background */
-    `;
-    document.head.appendChild(style);
+    // dynamic keyframes
+    const s = document.createElement('style');
+    s.textContent = `
+    @keyframes rise {
+      0% { transform: translateY(0) rotate(0deg) scale(0.9); opacity:0;}
+      10%{opacity:1;}
+      100% { transform: translateY(-120vh) rotate(360deg) scale(1.2); opacity:0;}
+    }`;
+    document.head.appendChild(s);
   })();
 
-  // ---------- COUNTDOWN ----------
+  // --- Countdown ---
   (function countdown() {
-    let t = COUNT_SECONDS;
-    countNumber.textContent = String(t);
-    // decrement visually each second
-    const interval = setInterval(() => {
-      t -= 1;
+    let t = COUNT;
+    countNumber.textContent = t;
+    const id = setInterval(() => {
+      t--;
       if (t <= 0) {
-        clearInterval(interval);
-        // small fade-out for overlay
-        overlay.classList.remove('show');
+        clearInterval(id);
+        // fade overlay
         overlay.style.transition = 'opacity .45s ease';
         overlay.style.opacity = '0';
-        setTimeout(() => {
-          overlay.remove();
-        }, 600);
-
-        // reveal main and trigger reveal actions
+        setTimeout(() => overlay.remove(), 600);
         revealMain();
       } else {
-        // animate number change
-        countNumber.classList.remove('pop');
+        // little pop animation
+        countNumber.classList.remove('popme');
         void countNumber.offsetWidth;
-        countNumber.classList.add('pop');
-        countNumber.textContent = String(t);
+        countNumber.classList.add('popme');
+        countNumber.textContent = t;
       }
     }, 1000);
   })();
 
-  // ---------- REVEAL MAIN + PLAY MUSIC + POPUP ----------
+  // --- Reveal main stage and show popup + play music ---
   function revealMain() {
-    // show main stage
+    mainStage.classList.remove('hidden');
     mainStage.removeAttribute('aria-hidden');
-    // immediately show HAPPY BIRTHDAY popup and play music (you chose A)
-    showPopupAndPlay();
-  }
 
-  async function showPopupAndPlay() {
-    // try to play music. Browsers may block autoplay; we will politely try and fallback.
-    try {
-      await music.play();
-    } catch (err) {
-      // autoplay blocked — create a small unobtrusive 'Play' button to let user enable
-      createPlayButton();
-    }
-
-    // show popup and start fireworks
+    // show popup & confetti
+    popup.classList.remove('hidden');
     popup.classList.add('show');
-    popup.setAttribute('aria-hidden', 'false');
-    startFireworks();
+    popup.removeAttribute('aria-hidden');
 
-    // hide popup after 6s
+    // start confetti
+    startConfetti();
+
+    // hide popup after 5.5s
     setTimeout(() => {
-      stopFireworks();
       popup.classList.remove('show');
-      popup.setAttribute('aria-hidden', 'true');
-    }, 6000);
+      popup.classList.add('hidden');
+      stopConfetti();
+    }, 5500);
+
+    // attempt to play music
+    tryStartMusic();
   }
 
-  function createPlayButton() {
-    const btn = document.createElement('button');
-    btn.textContent = '▶ Play Birthday Song';
-    btn.style.position = 'fixed';
-    btn.style.right = '18px';
-    btn.style.bottom = '18px';
-    btn.style.zIndex = '9999';
-    btn.style.padding = '10px 14px';
-    btn.style.borderRadius = '10px';
-    btn.style.border = 'none';
-    btn.style.background = 'linear-gradient(90deg,#d4af37,#f6d67a)';
-    btn.style.color = '#081018';
-    btn.style.cursor = 'pointer';
-    btn.addEventListener('click', async () => {
-      try { await music.play(); btn.remove(); } catch (e) { alert('Playback failed'); }
-    });
-    document.body.appendChild(btn);
-  }
-
-  // ---------- CARD click -> flip and open diary ----------
-  card.addEventListener('click', async () => {
+  // --- Card flip and diary page-turn ---
+  card.addEventListener('click', () => {
     if (card.classList.contains('opened')) return;
     card.classList.add('opened');
-    // Wait for flip to finish then show diary
     setTimeout(() => {
-      diary.classList.add('open');
-      diary.setAttribute('aria-hidden', 'false');
-    }, 1050);
+      // reveal turn button and show diary cover -> page-turn only after pressing turn
+      turnBtn.classList.remove('hidden');
+      turnBtn.setAttribute('aria-hidden', 'false');
+    }, 900);
   });
 
-  // ---------- FIREWORKS (simple particle system) ----------
-  (function fireworksSetup() {
-    const ctx = fwCanvas.getContext('2d');
-    let W = fwCanvas.width = innerWidth;
-    let H = fwCanvas.height = innerHeight;
-    let raf = null;
-    const particles = [];
+  turnBtn.addEventListener('click', () => {
+    // animate cover disappears and page turns in
+    diaryCover.style.transition = 'transform .7s ease, opacity .6s';
+    diaryCover.style.transform = 'translateX(-40px) rotate(-8deg)';
+    diaryCover.style.opacity = '0';
+    setTimeout(() => {
+      diaryCover.style.display = 'none';
+      page.classList.add('open'); // page-turn reveal
+      page.setAttribute('aria-hidden', 'false');
+      turnBtn.classList.add('hidden');
+    }, 600);
+  });
 
-    function resize() { W = fwCanvas.width = innerWidth; H = fwCanvas.height = innerHeight; }
-    addEventListener('resize', resize);
+  // --- Confetti (simple particle) ---
+  let confettiAnim = null;
+  function startConfetti() {
+    const canvas = confettiCanvas;
+    const ctx = canvas.getContext('2d');
+    let W = canvas.width = innerWidth;
+    let H = canvas.height = innerHeight;
+    const pieces = [];
 
     function rand(min, max) { return Math.random() * (max - min) + min; }
-
-    class Particle {
-      constructor(x, y, vx, vy, color) {
-        this.x = x; this.y = y; this.vx = vx; this.vy = vy; this.color = color;
-        this.life = rand(50, 120); this.age = 0;
-      }
-      update() {
-        this.x += this.vx; this.y += this.vy; this.vy += 0.06; this.vx *= 0.998; this.age++;
-      }
-      draw() {
-        ctx.globalCompositeOperation = 'lighter';
-        ctx.fillStyle = this.color;
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, Math.max(0, 3 - this.age * 0.02), 0, Math.PI * 2);
-        ctx.fill();
-      }
-    }
-
-    function burst(x, y, count) {
-      const hues = [40, 50, 200, 320, 260, 120];
+    function spawnBurst() {
+      const cx = W * (0.2 + Math.random() * 0.6);
+      const cy = H * (0.25 + Math.random() * 0.35);
+      const count = 70;
       for (let i = 0; i < count; i++) {
-        const a = rand(0, Math.PI * 2);
-        const s = rand(2, 7);
-        const color = `hsl(${hues[i % hues.length]} ${rand(60,85)}% ${rand(45,65)}%)`;
-        particles.push(new Particle(x, y, Math.cos(a) * s, Math.sin(a) * s, color));
+        pieces.push({
+          x: cx,
+          y: cy,
+          vx: rand(-6, 6),
+          vy: rand(-10, -2),
+          size: rand(6, 13),
+          color: `hsl(${rand(300, 360)},70%,60%)`
+        });
       }
     }
 
     function loop() {
       ctx.clearRect(0, 0, W, H);
-      for (let i = particles.length - 1; i >= 0; i--) {
-        const p = particles[i];
-        p.update(); p.draw();
-        if (p.age > p.life) particles.splice(i, 1);
+      for (let i = pieces.length - 1; i >= 0; i--) {
+        const p = pieces[i];
+        p.x += p.vx; p.y += p.vy; p.vy += 0.25;
+        p.vx *= 0.998;
+        ctx.fillStyle = p.color;
+        ctx.beginPath();
+        ctx.rect(p.x, p.y, p.size, p.size * 0.6);
+        ctx.fill();
+        if (p.y > H + 50) pieces.splice(i, 1);
       }
-      raf = requestAnimationFrame(loop);
+      confettiAnim = requestAnimationFrame(loop);
     }
 
-    window.startFireworks = function () {
-      // create a few bursts across the screen
-      burst(W * 0.2, H * 0.45, 60);
-      burst(W * 0.5, H * 0.35, 80);
-      burst(W * 0.8, H * 0.52, 64);
-      if (!raf) raf = requestAnimationFrame(loop);
-      // also schedule additional random bursts for a short time for richness
-      let extra = 3;
-      const t = setInterval(() => {
-        burst(rand(0.15 * W, 0.85 * W), rand(0.25 * H, 0.6 * H), Math.round(rand(40, 80)));
-        extra--; if (extra <= 0) clearInterval(t);
-      }, 700);
-    };
+    spawnBurst();
+    spawnBurst();
+    if (!confettiAnim) confettiAnim = requestAnimationFrame(loop);
+    // spawn a couple more bursts for richness
+    let extra = 3;
+    const t = setInterval(() => {
+      spawnBurst();
+      extra--; if (extra <= 0) clearInterval(t);
+    }, 500);
 
-    window.stopFireworks = function () {
-      if (raf) { cancelAnimationFrame(raf); raf = null; }
-      ctx.clearRect(0, 0, W, H);
-      particles.length = 0;
-    };
-  })();
+    addEventListener('resize', () => { W = canvas.width = innerWidth; H = canvas.height = innerHeight; });
+  }
 
-  // Ensure clean up if user navigates away
-  addEventListener('visibilitychange', () => {
-    if (document.hidden) {
-      music.pause();
-      if (window.stopFireworks) window.stopFireworks();
+  function stopConfetti() {
+    if (confettiAnim) { cancelAnimationFrame(confettiAnim); confettiAnim = null; const ctx = confettiCanvas.getContext('2d'); ctx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height); }
+  }
+
+  // --- Music: synth Happy Birthday melody (looping) via WebAudio ---
+  let audioCtx, masterGain, isPlaying = false, loopId = null;
+  // melody as array of [midiNote, durationBeats], using 120bpm baseline
+  // Simple melody approximation (notes in MIDI numbers)
+  const melody = [
+    [64, 0.75], [64, 0.25], [66, 1], [64, 1], [69, 1], [68, 2], // "Happy birthday to you"
+    [64, 0.75], [64, 0.25], [66, 1], [64, 1], [71, 1], [69, 2], // "Happy birthday to you"
+    [64, 0.75], [64, 0.25], [76, 1], [72, 1], [69, 1], [68, 1], [66, 1], // "Happy birthday dear [name]"
+    [74, 0.75], [74, 0.25], [72, 1], [69, 1], [71, 1], [69, 2] // "Happy birthday to you"
+  ];
+
+  function midiToFreq(m) { return 440 * Math.pow(2, (m - 69) / 12); }
+
+  function startSynth() {
+    if (isPlaying) return;
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    masterGain = audioCtx.createGain();
+    masterGain.gain.value = 0.12; // gentle volume
+    masterGain.connect(audioCtx.destination);
+
+    const now = audioCtx.currentTime;
+    let t = now + 0.1;
+    const bpm = 92; // slower, gentle
+    const beat = 60 / bpm;
+
+    // schedule melody loop (will be re-scheduled to loop)
+    function schedule(startTime) {
+      let time = startTime;
+      for (let i = 0; i < melody.length; i++) {
+        const [note, dur] = melody[i];
+        const osc = audioCtx.createOscillator();
+        const env = audioCtx.createGain();
+        osc.type = 'sine';
+        osc.frequency.value = midiToFreq(note);
+        env.gain.value = 0;
+        osc.connect(env); env.connect(masterGain);
+        osc.start(time);
+        // envelope
+        env.gain.linearRampToValueAtTime(1.0, time + 0.01);
+        env.gain.linearRampToValueAtTime(0.0001, time + dur * beat - 0.02);
+        osc.stop(time + dur * beat + 0.05);
+        time += dur * beat;
+      }
+      // return total length
+      return time - startTime;
     }
+
+    // schedule repeating loop
+    const loopLen = schedule(t);
+    // set up an interval to reschedule slightly before loop ends
+    loopId = setInterval(() => {
+      // schedule again after a small gap
+      schedule(audioCtx.currentTime + 0.1);
+    }, Math.max(4000, loopLen * 1000 - 500));
+
+    isPlaying = true;
+  }
+
+  function stopSynth() {
+    if (loopId) { clearInterval(loopId); loopId = null; }
+    if (audioCtx) { audioCtx.close(); audioCtx = null; }
+    isPlaying = false;
+  }
+
+  // Try to start music; if autoplay blocked, show fallback button
+  async function tryStartMusic() {
+    try {
+      startSynth();
+      // browsers often require a user gesture; check state
+      if (audioCtx && audioCtx.state === 'suspended') {
+        // will show fallback
+        throw new Error('suspended');
+      }
+    } catch (e) {
+      // show fallback play button
+      playFallback.classList.remove('hidden');
+      playFallback.addEventListener('click', async () => {
+        try {
+          startSynth();
+          playFallback.classList.add('hidden');
+        } catch (err) {
+          alert('Playback failed — your browser may block sound.');
+        }
+      });
+    }
+  }
+
+  // If user leaves page, stop synth & confetti
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) { stopSynth(); stopConfetti(); }
   });
 })();
