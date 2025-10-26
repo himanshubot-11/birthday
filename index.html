@@ -1,74 +1,39 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Happy Birthday — Cute Diary</title>
-  <link rel="stylesheet" href="style.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Birthday Wish</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <!-- Countdown overlay (3s) -->
-  <div id="countdownOverlay" class="overlay">
-    <div class="hearts-bg" aria-hidden="true"></div>
-    <div class="countbox">
-      <div id="countNumber">3</div>
-      <div class="subtitle">A little surprise…</div>
+    <div class="card" id="birthdayCard">
+        <div class="card-inner">
+            <div class="front">
+                <p>Click to Open Your Birthday Card!</p>
+            </div>
+            <div class="back">
+                <div class="diary">
+                    <p>Happy Birthday to my special person! Wishing you all the joy, love, and happiness on this wonderful day.</p>
+                    <p>Thank you for being with me for 476 amazing days. Every single one has been brighter because of you.</p>
+                    <p>I adore how you are with me – your radiant smile that lights up my world, your engaging talks that make time fly, and everything about you that makes my life complete.</p>
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
 
-  <!-- Main content (hidden until reveal) -->
-  <main id="mainStage" class="stage hidden" aria-hidden="true">
-    <section class="left">
-      <div class="card-wrap">
-        <div id="card" class="card" title="Click to open card">
-          <div class="face front">
-            <div class="emoji">🎁</div>
-            <div class="front-title">Click to open your birthday card</div>
-            <div class="hint">Tap to flip</div>
-          </div>
-          <div class="face back">
-            <h2>Open with love</h2>
-            <p>Flip to read a few words made just for you.</p>
-          </div>
+    <!-- Popup Modal -->
+    <div id="popupModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <p>Happy Birthday!</p>
         </div>
-      </div>
-    </section>
+    </div>
 
-    <aside class="right">
-      <div id="diary" class="diary" aria-hidden="true">
-        <div class="cover" id="diaryCover">
-          <div class="cover-title">My Little Diary</div>
-          <div class="cover-sub">A page for you</div>
-        </div>
+    <!-- Audio -->
+    <audio id="birthdayMusic" src="https://archive.org/download/happy-birthday-to-you-instrumental/Happy%20Birthday%20to%20You%20Classical.mp3"></audio>
 
-        <!-- Page content (page-turn reveal) -->
-        <div class="page" id="page">
-          <div class="page-inner">
-            <div class="page-header">
-              <h3>Personal Diary <span class="day">Day 476</span></h3>
-            </div>
-            <div class="lines">
-              <div class="compliment"><strong>1)</strong> 🎂 Happy birthday to the most special person — you make every ordinary day feel like a celebration.</div>
-              <div class="compliment"><strong>2)</strong> 🙏 Thank you for being with me for <strong>476 days</strong> — every day with you has been a gift I cherish.</div>
-              <div class="compliment"><strong>3)</strong> 😊 I adore your smile, the way you speak so kindly, and everything that makes you <em>you</em>.</div>
-            </div>
-          </div>
-        </div>
-
-        <button id="turnBtn" class="turn-btn" aria-hidden="true">Turn Page</button>
-      </div>
-    </aside>
-  </main>
-
-  <!-- Happy birthday popup + confetti canvas -->
-  <div id="revealPopup" class="popup hidden" aria-hidden="true">
-    <canvas id="confetti"></canvas>
-    <div class="message">🎉 HAPPY BIRTHDAY! 🎉</div>
-  </div>
-
-  <!-- Small fallback play button if autoplay blocked -->
-  <button id="playFallback" class="play-fallback hidden">▶ Play Birthday Song</button>
-
-  <script src="script.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
