@@ -1,115 +1,30 @@
-/* script.js
-   - 3-second countdown with cute hearts background
-   - After countdown: reveal main stage, show HAPPY BIRTHDAY popup + confetti
-   - Card flips on click; diary cover "page-turn" reveals compliments (2c)
-   - Music: synthesized "Happy Birthday" melody via Web Audio API (loops)
-   - If autoplay blocked, a play button appears
-*/
+// script.js
+document.addEventListener('DOMContentLoaded', function() {
+    const card = document.getElementById('birthdayCard');
+    const audio = document.getElementById('birthdayMusic');
+    const modal = document.getElementById('popupModal');
+    const closeBtn = document.querySelector('.close');
 
-(() => {
-  const COUNT = 3; // 3 seconds
-  const overlay = document.getElementById('countdownOverlay');
-  const countNumber = document.getElementById('countNumber');
-  const mainStage = document.getElementById('mainStage');
-  const popup = document.getElementById('revealPopup');
-  const playFallback = document.getElementById('playFallback');
-  const confettiCanvas = document.getElementById('confetti');
+    card.addEventListener('click', function() {
+        card.classList.add('open');
+        audio.play().catch(function(error) {
+            console.log("Audio playback failed:", error);
+        });
+        setTimeout(function() {
+            modal.style.display = 'flex';
+        }, 3000);
+    });
 
-  const card = document.getElementById('card');
-  const diaryCover = document.getElementById('diaryCover');
-  const page = document.getElementById('page');
-  const turnBtn = document.getElementById('turnBtn');
+    closeBtn.addEventListener('click', function() {
+        modal.style.display = 'none';
+    });
 
-  // --- Hearts background creation ---
-  (function makeHearts() {
-    const container = document.querySelector('.hearts-bg');
-    if (!container) return;
-    const total = 22;
-    for (let i = 0; i < total; i++) {
-      const el = document.createElement('div');
-      el.className = 'heart';
-      const size = 12 + Math.random() * 36;
-      el.style.width = size + 'px';
-      el.style.height = size + 'px';
-      el.style.left = Math.random() * 100 + '%';
-      el.style.bottom = -60 - Math.random() * 120 + 'px';
-      el.style.opacity = 0.7 + Math.random() * 0.3;
-      const delay = Math.random() * 1.2;
-      const dur = 4 + Math.random() * 5;
-      el.style.animation = `rise ${dur}s linear ${delay}s infinite`;
-      container.appendChild(el);
-    }
-    // dynamic keyframes
-    const s = document.createElement('style');
-    s.textContent = `
-    @keyframes rise {
-      0% { transform: translateY(0) rotate(0deg) scale(0.9); opacity:0;}
-      10%{opacity:1;}
-      100% { transform: translateY(-120vh) rotate(360deg) scale(1.2); opacity:0;}
-    }`;
-    document.head.appendChild(s);
-  })();
-
-  // --- Countdown ---
-  (function countdown() {
-    let t = COUNT;
-    countNumber.textContent = t;
-    const id = setInterval(() => {
-      t--;
-      if (t <= 0) {
-        clearInterval(id);
-        // fade overlay
-        overlay.style.transition = 'opacity .45s ease';
-        overlay.style.opacity = '0';
-        setTimeout(() => overlay.remove(), 600);
-        revealMain();
-      } else {
-        // little pop animation
-        countNumber.classList.remove('popme');
-        void countNumber.offsetWidth;
-        countNumber.classList.add('popme');
-        countNumber.textContent = t;
-      }
-    }, 1000);
-  })();
-
-  // --- Reveal main stage and show popup + play music ---
-  function revealMain() {
-    mainStage.classList.remove('hidden');
-    mainStage.removeAttribute('aria-hidden');
-
-    // show popup & confetti
-    popup.classList.remove('hidden');
-    popup.classList.add('show');
-    popup.removeAttribute('aria-hidden');
-
-    // start confetti
-    startConfetti();
-
-    // hide popup after 5.5s
-    setTimeout(() => {
-      popup.classList.remove('show');
-      popup.classList.add('hidden');
-      stopConfetti();
-    }, 5500);
-
-    // attempt to play music
-    tryStartMusic();
-  }
-
-  // --- Card flip and diary page-turn ---
-  card.addEventListener('click', () => {
-    if (card.classList.contains('opened')) return;
-    card.classList.add('opened');
-    setTimeout(() => {
-      // reveal turn button and show diary cover -> page-turn only after pressing turn
-      turnBtn.classList.remove('hidden');
-      turnBtn.setAttribute('aria-hidden', 'false');
-    }, 900);
-  });
-
-  turnBtn.addEventListener('click', () => {
-    // animate cover disappears and page turns in
+    window.addEventListener('click', function(event) {
+        if (event.target == modal) {
+            modal.style.display = 'none';
+        }
+    });
+});    // animate cover disappears and page turns in
     diaryCover.style.transition = 'transform .7s ease, opacity .6s';
     diaryCover.style.transform = 'translateX(-40px) rotate(-8deg)';
     diaryCover.style.opacity = '0';
