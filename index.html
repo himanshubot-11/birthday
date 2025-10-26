@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Birthday Wish</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="/birthday/styles.css"> <!-- Adjust path based on your repo structure -->
 </head>
 <body>
     <div class="card" id="birthdayCard">
@@ -31,9 +31,11 @@
         </div>
     </div>
 
-    <!-- Audio -->
-    <audio id="birthdayMusic" src="https://archive.org/download/happy-birthday-to-you-instrumental/Happy%20Birthday%20to%20You%20Classical.mp3"></audio>
+    <!-- Audio with Local Fallback -->
+    <audio id="birthdayMusic" src="/birthday/happy_birthday.mp3"> <!-- Update with local file path -->
+        <source src="https://archive.org/download/happy-birthday-to-you-instrumental/Happy%20Birthday%20to%20You%20Classical.mp3" type="audio/mpeg">
+    </audio>
 
-    <script src="script.js"></script>
+    <script src="/birthday/script.js"></script> <!-- Adjust path based on your repo structure -->
 </body>
 </html>
