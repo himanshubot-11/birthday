@@ -3,27 +3,27 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Happy Birthday</title>
+  <title>Happy Birthday — Cute Diary</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <!-- COUNTDOWN OVERLAY (3 seconds) -->
-  <div id="countdownOverlay" class="overlay show">
+  <!-- Countdown overlay (3s) -->
+  <div id="countdownOverlay" class="overlay">
     <div class="hearts-bg" aria-hidden="true"></div>
-    <div class="countdown">
+    <div class="countbox">
       <div id="countNumber">3</div>
-      <div class="subtitle">Get ready…</div>
+      <div class="subtitle">A little surprise…</div>
     </div>
   </div>
 
-  <!-- MAIN STAGE -->
-  <main class="stage" id="mainStage" aria-hidden="true">
+  <!-- Main content (hidden until reveal) -->
+  <main id="mainStage" class="stage hidden" aria-hidden="true">
     <section class="left">
       <div class="card-wrap">
-        <div class="card" id="card" title="Click to open card">
+        <div id="card" class="card" title="Click to open card">
           <div class="face front">
-            <div class="label-emoji">🎁</div>
-            <div class="label">Click to open your birthday card</div>
+            <div class="emoji">🎁</div>
+            <div class="front-title">Click to open your birthday card</div>
             <div class="hint">Tap to flip</div>
           </div>
           <div class="face back">
@@ -36,24 +36,38 @@
 
     <aside class="right">
       <div id="diary" class="diary" aria-hidden="true">
-        <div class="title"><h3>Personal Diary</h3><div class="day">Day 476</div></div>
-        <div class="lines">
-          <div class="compliment"><strong>1)</strong> 🎂 Happy birthday to the most special person — you make every ordinary day feel like a celebration.</div>
-          <div class="compliment"><strong>2)</strong> 🙏 Thank you for being with me for <strong>476 days</strong> — every day with you has been a gift I cherish.</div>
-          <div class="compliment"><strong>3)</strong> 😊 I adore your smile, the way you speak so kindly, and everything that makes you <em>you</em> — your warmth, your laugh, and the way you make me smile back.</div>
+        <div class="cover" id="diaryCover">
+          <div class="cover-title">My Little Diary</div>
+          <div class="cover-sub">A page for you</div>
         </div>
+
+        <!-- Page content (page-turn reveal) -->
+        <div class="page" id="page">
+          <div class="page-inner">
+            <div class="page-header">
+              <h3>Personal Diary <span class="day">Day 476</span></h3>
+            </div>
+            <div class="lines">
+              <div class="compliment"><strong>1)</strong> 🎂 Happy birthday to the most special person — you make every ordinary day feel like a celebration.</div>
+              <div class="compliment"><strong>2)</strong> 🙏 Thank you for being with me for <strong>476 days</strong> — every day with you has been a gift I cherish.</div>
+              <div class="compliment"><strong>3)</strong> 😊 I adore your smile, the way you speak so kindly, and everything that makes you <em>you</em>.</div>
+            </div>
+          </div>
+        </div>
+
+        <button id="turnBtn" class="turn-btn" aria-hidden="true">Turn Page</button>
       </div>
     </aside>
   </main>
 
-  <!-- HAPPY BIRTHDAY POPUP + Fireworks -->
-  <div id="revealPopup" class="popup" aria-hidden="true">
-    <canvas id="fwCanvas"></canvas>
+  <!-- Happy birthday popup + confetti canvas -->
+  <div id="revealPopup" class="popup hidden" aria-hidden="true">
+    <canvas id="confetti"></canvas>
     <div class="message">🎉 HAPPY BIRTHDAY! 🎉</div>
   </div>
 
-  <!-- Audio (pre-fixed file name) -->
-  <audio id="music" src="happy-birthday.mp3" preload="auto"></audio>
+  <!-- Small fallback play button if autoplay blocked -->
+  <button id="playFallback" class="play-fallback hidden">▶ Play Birthday Song</button>
 
   <script src="script.js"></script>
 </body>
