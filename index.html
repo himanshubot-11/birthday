@@ -1,49 +1,60 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Happy Birthday!</title>
-<link rel="stylesheet" href="style.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Happy Birthday</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-
-<!-- Floating emojis container -->
-<div class="floating-emojis"></div>
-
-<!-- Audio -->
-<audio id="birthdayMusic" loop>
-  <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
-</audio>
-
-<!-- Main container -->
-<div class="container">
-
-  <!-- Initial Screen -->
-  <div class="birthday-box" id="birthdayBox">
-    <h1>HAPPY BIRTHDAY TO YOU 🎉</h1>
-    <button id="openDiary">OPEN</button>
-  </div>
-
-  <!-- Diary Popup -->
-  <div class="diary-popup" id="diaryPopup">
-    <div class="diary-content">
-      <div class="diary-page" data-text="27 October\nHappy Birthday to a Special Person!"></div>
-      <div class="diary-page" data-text="You are amazing and bring so much joy!"></div>
-      <div class="diary-page" data-text="Thank you for staying with me for over a year from 18 June 2024!"></div>
-      <button id="nextPage">Next</button>
+  <!-- COUNTDOWN OVERLAY (3 seconds) -->
+  <div id="countdownOverlay" class="overlay show">
+    <div class="hearts-bg" aria-hidden="true"></div>
+    <div class="countdown">
+      <div id="countNumber">3</div>
+      <div class="subtitle">Get ready…</div>
     </div>
   </div>
 
-  <!-- Celebration Popup -->
-  <div class="celebration-popup" id="celebrationPopup">
-    <h2>Enjoy Your Day!</h2>
-    <h3>Happy Birthday Again 🎉</h3>
-    <button id="homeBtn">HOME</button>
+  <!-- MAIN STAGE -->
+  <main class="stage" id="mainStage" aria-hidden="true">
+    <section class="left">
+      <div class="card-wrap">
+        <div class="card" id="card" title="Click to open card">
+          <div class="face front">
+            <div class="label-emoji">🎁</div>
+            <div class="label">Click to open your birthday card</div>
+            <div class="hint">Tap to flip</div>
+          </div>
+          <div class="face back">
+            <h2>Open with love</h2>
+            <p>Flip to read a few words made just for you.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <aside class="right">
+      <div id="diary" class="diary" aria-hidden="true">
+        <div class="title"><h3>Personal Diary</h3><div class="day">Day 476</div></div>
+        <div class="lines">
+          <div class="compliment"><strong>1)</strong> 🎂 Happy birthday to the most special person — you make every ordinary day feel like a celebration.</div>
+          <div class="compliment"><strong>2)</strong> 🙏 Thank you for being with me for <strong>476 days</strong> — every day with you has been a gift I cherish.</div>
+          <div class="compliment"><strong>3)</strong> 😊 I adore your smile, the way you speak so kindly, and everything that makes you <em>you</em> — your warmth, your laugh, and the way you make me smile back.</div>
+        </div>
+      </div>
+    </aside>
+  </main>
+
+  <!-- HAPPY BIRTHDAY POPUP + Fireworks -->
+  <div id="revealPopup" class="popup" aria-hidden="true">
+    <canvas id="fwCanvas"></canvas>
+    <div class="message">🎉 HAPPY BIRTHDAY! 🎉</div>
   </div>
 
-</div>
+  <!-- Audio (pre-fixed file name) -->
+  <audio id="music" src="happy-birthday.mp3" preload="auto"></audio>
 
-<script src="script.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
